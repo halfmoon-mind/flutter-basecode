@@ -1,0 +1,14 @@
+//
+//  development.xcconfig
+//  Runner
+//
+//  Created by 심상현 on 3/25/25.
+//
+
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET_NAME=template
+FLUTTER_FLAVOR=development
+FLAVOR_APP_NAME=Template Dev
+PRODUCT_BUNDLE_IDENTIFIER=com.testing.template.dev
+

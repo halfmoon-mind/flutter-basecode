@@ -55,6 +55,36 @@ sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.stg;/PRODUCT_BUNDLE_I
 # Runner 테스트 번들 ID도 변경
 sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.RunnerTests;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.RunnerTests;/g" $PBXPROJ_FILE
 
+# iOS xcconfig 파일 업데이트
+echo "iOS xcconfig 파일 업데이트 중..."
+
+# production.xcconfig 업데이트
+if [ -f "ios/production.xcconfig" ]; then
+  if grep -q "PRODUCT_BUNDLE_IDENTIFIER=" "ios/production.xcconfig"; then
+    sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=$OLD_PACKAGE_NAME/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME/" "ios/production.xcconfig"
+  else
+    echo "PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME" >> "ios/production.xcconfig"
+  fi
+fi
+
+# development.xcconfig 업데이트
+if [ -f "ios/development.xcconfig" ]; then
+  if grep -q "PRODUCT_BUNDLE_IDENTIFIER=" "ios/development.xcconfig"; then
+    sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=$OLD_PACKAGE_NAME.dev/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.dev/" "ios/development.xcconfig"
+  else
+    echo "PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.dev" >> "ios/development.xcconfig"
+  fi
+fi
+
+# staging.xcconfig 업데이트
+if [ -f "ios/staging.xcconfig" ]; then
+  if grep -q "PRODUCT_BUNDLE_IDENTIFIER=" "ios/staging.xcconfig"; then
+    sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=$OLD_PACKAGE_NAME.stg/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.stg/" "ios/staging.xcconfig"
+  else
+    echo "PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.stg" >> "ios/staging.xcconfig"
+  fi
+fi
+
 echo "macOS 패키지 이름 변경 중..."
 MACOS_PBXPROJ_FILE="macos/Runner.xcodeproj/project.pbxproj"
 
