@@ -47,13 +47,22 @@ fi
 echo "iOS 패키지 이름 변경 중..."
 PBXPROJ_FILE="ios/Runner.xcodeproj/project.pbxproj"
 
-# PRODUCT_BUNDLE_IDENTIFIER 변경
+# PRODUCT_BUNDLE_IDENTIFIER 변경 - 모든 가능한 패턴 포함
+# 기본 패키지 ID 변경
 sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME;/g" $PBXPROJ_FILE
 sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.dev;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.dev;/g" $PBXPROJ_FILE
 sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.stg;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.stg;/g" $PBXPROJ_FILE
-
-# Runner 테스트 번들 ID도 변경
 sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.RunnerTests;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.RunnerTests;/g" $PBXPROJ_FILE
+
+# 추가: com.hello.word와 같은 하드코딩된 ID 처리 (project.pbxproj 파일에서 발견됨)
+sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME;/g" $PBXPROJ_FILE
+sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word\.dev;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.dev;/g" $PBXPROJ_FILE
+sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word\.stg;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.stg;/g" $PBXPROJ_FILE
+sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word\.RunnerTests;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.RunnerTests;/g" $PBXPROJ_FILE
+
+# 더 포괄적인 접근: 따옴표 없는 PRODUCT_BUNDLE_IDENTIFIER 처리
+sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word$/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME/g" $PBXPROJ_FILE
+sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word;$/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME;/g" $PBXPROJ_FILE
 
 # iOS xcconfig 파일 업데이트
 echo "iOS xcconfig 파일 업데이트 중..."
@@ -62,6 +71,8 @@ echo "iOS xcconfig 파일 업데이트 중..."
 if [ -f "ios/production.xcconfig" ]; then
   if grep -q "PRODUCT_BUNDLE_IDENTIFIER=" "ios/production.xcconfig"; then
     sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=$OLD_PACKAGE_NAME/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME/" "ios/production.xcconfig"
+    # 하드코딩된 ID 처리
+    sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=com\.hello\.word/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME/" "ios/production.xcconfig"
   else
     echo "PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME" >> "ios/production.xcconfig"
   fi
@@ -71,6 +82,8 @@ fi
 if [ -f "ios/development.xcconfig" ]; then
   if grep -q "PRODUCT_BUNDLE_IDENTIFIER=" "ios/development.xcconfig"; then
     sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=$OLD_PACKAGE_NAME.dev/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.dev/" "ios/development.xcconfig"
+    # 하드코딩된 ID 처리
+    sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=com\.hello\.word\.dev/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.dev/" "ios/development.xcconfig"
   else
     echo "PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.dev" >> "ios/development.xcconfig"
   fi
@@ -80,6 +93,8 @@ fi
 if [ -f "ios/staging.xcconfig" ]; then
   if grep -q "PRODUCT_BUNDLE_IDENTIFIER=" "ios/staging.xcconfig"; then
     sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=$OLD_PACKAGE_NAME.stg/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.stg/" "ios/staging.xcconfig"
+    # 하드코딩된 ID 처리
+    sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER=com\.hello\.word\.stg/PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.stg/" "ios/staging.xcconfig"
   else
     echo "PRODUCT_BUNDLE_IDENTIFIER=$NEW_PACKAGE_NAME.stg" >> "ios/staging.xcconfig"
   fi
@@ -94,6 +109,12 @@ if [ -f "$MACOS_PBXPROJ_FILE" ]; then
   sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.dev;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.dev;/g" $MACOS_PBXPROJ_FILE
   sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.stg;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.stg;/g" $MACOS_PBXPROJ_FILE
   sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = $OLD_PACKAGE_NAME.RunnerTests;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.RunnerTests;/g" $MACOS_PBXPROJ_FILE
+  
+  # 추가: 하드코딩된 ID 처리
+  sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME;/g" $MACOS_PBXPROJ_FILE
+  sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word\.dev;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.dev;/g" $MACOS_PBXPROJ_FILE
+  sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word\.stg;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.stg;/g" $MACOS_PBXPROJ_FILE
+  sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = com\.hello\.word\.RunnerTests;/PRODUCT_BUNDLE_IDENTIFIER = $NEW_PACKAGE_NAME.RunnerTests;/g" $MACOS_PBXPROJ_FILE
 fi
 
 echo "패키지 이름이 성공적으로 $NEW_PACKAGE_NAME 으로 변경되었습니다."
