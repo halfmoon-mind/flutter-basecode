@@ -3,5 +3,5 @@ import 'package:template/core/configs/env_config.dart';
 
 void main() {
   EnvConfig.initialize(AppFlavor.development);
-  bootstrap(() => const App());
+  bootstrap();
 }
