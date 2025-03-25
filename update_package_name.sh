@@ -20,8 +20,13 @@ echo "패키지 이름을 $OLD_PACKAGE_NAME 에서 $NEW_PACKAGE_NAME 으로 변�
 
 # Android 패키지 이름 변경
 echo "Android 패키지 이름 변경 중..."
+# 기본 패키지명 변경
 sed -i '' "s/namespace \"$OLD_PACKAGE_NAME\"/namespace \"$NEW_PACKAGE_NAME\"/" android/app/build.gradle
 sed -i '' "s/applicationId \"$OLD_PACKAGE_NAME\"/applicationId \"$NEW_PACKAGE_NAME\"/" android/app/build.gradle
+
+# 하드코딩된 패키지명도 처리 (build.gradle에서 발견됨)
+sed -i '' "s/namespace \"com\.hello\.word\"/namespace \"$NEW_PACKAGE_NAME\"/" android/app/build.gradle
+sed -i '' "s/applicationId \"com\.hello\.word\"/applicationId \"$NEW_PACKAGE_NAME\"/" android/app/build.gradle
 
 # Android 패키지 네임스페이스 변경 (kotlin 파일들이 있는 디렉토리 경로 변경)
 OLD_PACKAGE_PATH=$(echo $OLD_PACKAGE_NAME | sed 's/\./\//g')
@@ -41,6 +46,26 @@ if [ -d "android/app/src/main/kotlin/$OLD_PACKAGE_PATH" ]; then
   
   # 기존 디렉토리 제거 (선택적)
   rm -rf "android/app/src/main/kotlin/$OLD_PACKAGE_PATH"
+fi
+
+# com.hello.word 패키지가 사용된 경우 해당 디렉토리도 처리
+HARDCODED_PACKAGE_PATH="com/hello/word"
+if [ -d "android/app/src/main/kotlin/$HARDCODED_PACKAGE_PATH" ]; then
+  echo "Android 하드코딩된 소스 디렉토리 구조 변경 중..."
+  
+  # 이미 새 디렉토리가 존재하지 않는 경우에만 생성
+  if [ ! -d "android/app/src/main/kotlin/$NEW_PACKAGE_PATH" ]; then
+    mkdir -p "android/app/src/main/kotlin/$NEW_PACKAGE_PATH"
+  fi
+  
+  # 파일 복사
+  cp -R "android/app/src/main/kotlin/$HARDCODED_PACKAGE_PATH"/* "android/app/src/main/kotlin/$NEW_PACKAGE_PATH"
+  
+  # 파일 내용 업데이트
+  find "android/app/src/main/kotlin/$NEW_PACKAGE_PATH" -type f -name "*.kt" -exec sed -i '' "s/package com\.hello\.word/package $NEW_PACKAGE_NAME/g" {} \;
+  
+  # 기존 디렉토리 제거 (선택적)
+  rm -rf "android/app/src/main/kotlin/$HARDCODED_PACKAGE_PATH"
 fi
 
 # iOS 패키지 이름 변경
