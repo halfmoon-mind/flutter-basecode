@@ -11,7 +11,7 @@ class EnvConfig {
   static Future<void> initialize(AppFlavor flavor) async {
     appFlavor = flavor.name;
     // flavor 환경에 따라 환경 파일 로드
-    await dotenv.load(fileName: '.env.${flavor.name} ');
+    await dotenv.load(fileName: '.env.${flavor.name}');
   }
 
   static String get apiBaseUrl =>

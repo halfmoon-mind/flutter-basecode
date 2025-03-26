@@ -4,7 +4,10 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:template/core/router/app_router.dart';
+import 'package:template/core/themes/app_theme.dart';
+import 'package:template/l10n/l10n.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -33,5 +36,14 @@ Future<void> bootstrap() async {
 
   runApp(MaterialApp.router(
     routerConfig: goRouter,
+    theme: AppTheme.light,
+    darkTheme: AppTheme.dark,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
   ));
 }

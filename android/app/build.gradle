@@ -80,17 +80,26 @@ android {
         production {
             dimension "default"
             applicationIdSuffix ""
-            manifestPlaceholders = [appName: "Template"]
+            manifestPlaceholders = [
+                appName: "Template",
+                adUnitId: "ca-app-pub-3940256099942544~3347511713"
+            ]
         }
         staging {
             dimension "default"
             applicationIdSuffix ".stg"
-            manifestPlaceholders = [appName: "[STG] Template"]
+            manifestPlaceholders = [
+                appName: "[STG] Template",
+                adUnitId: "ca-app-pub-3940256099942544~3347511713"
+            ]
         }
         development {
             dimension "default"
             applicationIdSuffix ".dev"
-            manifestPlaceholders = [appName: "[DEV] Template"]
+            manifestPlaceholders = [
+                appName: "[DEV] Template",
+                adUnitId: "ca-app-pub-3940256099942544~3347511713"
+            ]
         }
     }
 

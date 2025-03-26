@@ -35,12 +35,12 @@ flutter:
 
   assets:
     - assets/
-    - assets/images/
     - assets/fonts/
     - assets/icons/
     - assets/app_icons/
-    - assets/lottie/
-    - assets/videos/
+    # - assets/images/
+    # - assets/lottie/
+    # - assets/videos/
     - .env.development
     - .env.staging
     - .env.production
