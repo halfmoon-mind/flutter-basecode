@@ -54,5 +54,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>GADApplicationIdentifier</key>
+	<string>$(AD_UNIT_ID)</string>
 </dict>
 </plist>
